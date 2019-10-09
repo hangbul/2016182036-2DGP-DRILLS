@@ -20,15 +20,22 @@ def handle_events():
                 dir = 1
             elif (x > to_x):
                 dir = -1
-            elif (x == to_x):
-                dir = 0
+
 
             if (y < to_y):
-                dir_ud = -1
-            elif (y > to_y):
                 dir_ud = 1
-            elif (y == to_y):
-                dir_ud = 0
+            elif (y > to_y):
+                dir_ud = -1
+
+        if (x == to_x):
+            dir = 0
+        elif (y == to_y):
+            dir_ud = 0
+        elif (dir == 0):
+            if (dir_bfor == 1):
+                frame_y = 3
+            elif (dir_bfor == -1):
+                frame_y = 2
 
     pass
 
@@ -47,12 +54,12 @@ def character_move(dir, dir_ud, dir_bfor):
             frame_y = 0
         elif (dir_bfor == 1):
             frame_y = 1
-    elif (dir == 0):
-        if (dir_bfor == 1):
-            frame_y = 3
-        elif (dir_bfor == -1):
-            frame_y = 2
 
+
+    if (x != to_x):
+        x += dir;
+    if (y != to_y):
+        y += dir_ud;
 
     pass
 
@@ -77,7 +84,7 @@ dir_bfor = 1
 while running:
     clear_canvas()
     kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
-    hand_arrow.draw_now(mouse_x, mouse_y)
+    hand_arrow.draw_now(mouse_x + 10, mouse_y - 10)
 
     character.clip_draw(frame_x * 100, frame_y * 100, 100, 100, x, y)
 
