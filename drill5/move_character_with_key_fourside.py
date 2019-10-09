@@ -59,12 +59,12 @@ def character_now(dir, dir_ud):
     pass
 
 def character_move():
-    global x, y, to_x,to_y,bfo_x,bfo_y
+    global x, y, to_x,to_y,bfo_x,bfo_y, t
 
     if (dir != 0):
-        x += dir
+        x = (1-t)*bfo_x + t*to_x
     if (dir_ud != 0):
-        y += dir_ud
+        y = (1-t)*bfo_y + t*to_y
 
     pass
 
@@ -78,6 +78,7 @@ x, y = KPU_WIDTH // 2, KPU_HEIGHT // 2
 to_x, to_y = 0, 0
 bfo_x, bfo_y=0,0
 
+t, i=0, 0
 
 mouse_x, mouse_y = KPU_WIDTH // 2, KPU_HEIGHT // 2
 
@@ -99,14 +100,16 @@ while running:
     draw_rectangle(bfo_x - 10, bfo_y - 10, bfo_x + 10, bfo_y + 10)
 
     character_now(dir, dir_ud)
+    t=i/100
     character_move()
-
 
     update_canvas()
 
     handle_events()
     frame_x = (frame_x + 1) % 8
-
+    i+=1
+    if i==100:
+        i=0
     #delay(0.01)
 
 close_canvas()
