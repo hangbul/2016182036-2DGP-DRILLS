@@ -28,10 +28,7 @@ def handle_events():
             elif (bfo_y > to_y):
                 dir_ud = -1
 
-        if x > to_x-2 and x < to_x+2:
-            dir = 0
-        elif y > to_y - 2 and y < to_y + 2:
-            dir_ud = 0
+        
 
     pass
 
@@ -96,11 +93,9 @@ while running:
 
     character.clip_draw(frame_x * 100, frame_y * 100, 100, 100, x, y)
 
-    draw_rectangle(to_x - 10, to_y - 10, to_x + 10, to_y + 10)
-    draw_rectangle(bfo_x - 10, bfo_y - 10, bfo_x + 10, bfo_y + 10)
 
     character_now(dir, dir_ud)
-    t=i/100
+    t=i/500
     character_move()
 
     update_canvas()
@@ -108,8 +103,10 @@ while running:
     handle_events()
     frame_x = (frame_x + 1) % 8
     i+=1
-    if i==100:
+    if i==500:
         i=0
+        dir = 0
+        dir_ud = 0
     #delay(0.01)
 
 close_canvas()
