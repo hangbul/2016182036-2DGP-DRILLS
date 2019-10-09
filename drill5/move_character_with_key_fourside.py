@@ -28,7 +28,7 @@ def handle_events():
             elif (bfo_y > to_y):
                 dir_ud = -1
 
-        
+
 
     pass
 
