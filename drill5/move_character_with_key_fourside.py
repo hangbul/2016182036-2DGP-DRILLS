@@ -3,11 +3,7 @@ from pico2d import *
 KPU_WIDTH, KPU_HEIGHT = 1280, 1024
 
 def handle_events():
-    global running
-    global dir
-    global dir_ud
-    global mouse_x, mouse_y
-    global to_x, to_y
+    global running, dir, dir_ud, mouse_x, mouse_y, to_x, to_y
 
     events = get_events()
     for event in events:
@@ -19,7 +15,7 @@ def handle_events():
         if event.type == SDL_MOUSEMOTION:
             mouse_x, mouse_y = event.x, KPU_HEIGHT - 1 - event.y
         elif event.type == SDL_MOUSEBUTTONDOWN:
-            to_x, to_y = event.x, event.y
+            to_x, to_y = event.x, KPU_HEIGHT - 1 - event.y
             if (x < to_x):
                 dir = 1
             elif (x > to_x):
@@ -37,7 +33,8 @@ def handle_events():
     pass
 
 def character_move(dir, dir_ud, dir_bfor):
-    global frame_x, frame_y, x,y
+    global frame_x, frame_y, x,y, to_x, to_y, bfo_x, bfo_y
+
     if (dir == -1):
         frame_y = 0
         dir_bfor = -1
@@ -55,8 +52,8 @@ def character_move(dir, dir_ud, dir_bfor):
             frame_y = 3
         elif (dir_bfor == -1):
             frame_y = 2
-    x += dir * 2
-    y += dir_ud * 2
+
+
     pass
 
 open_canvas(KPU_WIDTH, KPU_HEIGHT)
@@ -66,6 +63,7 @@ hand_arrow = load_image('hand_arrow.png')
 
 running = True
 x, y = KPU_WIDTH // 2, KPU_HEIGHT // 2
+
 to_x, to_y = 0, 0
 mouse_x, mouse_y = KPU_WIDTH // 2, KPU_HEIGHT // 2
 
@@ -82,6 +80,8 @@ while running:
     hand_arrow.draw_now(mouse_x, mouse_y)
 
     character.clip_draw(frame_x * 100, frame_y * 100, 100, 100, x, y)
+
+
     update_canvas()
 
     handle_events()
