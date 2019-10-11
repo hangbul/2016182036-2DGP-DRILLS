@@ -38,35 +38,38 @@ def character_now(dir, dir_ud):
 
     pass
 
-def character_move(p1, p2, p3, p4, t):
+def character_move(p1, p2, p3, p4, i):
     global x, y
 
+
     # draw p1-p2
-    if(t>=0 and t<200):
+
+    if(i<3000):
+        t = i / 3000
         x = ((-t ** 3 + 2 * t ** 2 - t) * p4[0] + (3 * t ** 3 - 5 * t ** 2 + 2) * p1[0] + (-3 * t ** 3 + 4 * t ** 2 + t) * p2[0] + (t ** 3 - t ** 2) * p3[0]) / 2
         y = ((-t ** 3 + 2 * t ** 2 - t) * p4[1] + (3 * t ** 3 - 5 * t ** 2 + 2) * p1[1] + (-3 * t ** 3 + 4 * t ** 2 + t) * p2[1] + (t ** 3 - t ** 2) * p3[1]) / 2
 
-
     # draw p2-p3
 
-    elif(t>=200 and t<400):
+    elif(i>=3000 and i<6000):
+        t = (i - 3000)/ 3000
         x = ((-t ** 3 + 2 * t ** 2 - t) * p1[0] + (3 * t ** 3 - 5 * t ** 2 + 2) * p2[0] + (-3 * t ** 3 + 4 * t ** 2 + t) * p3[0] + (t ** 3 - t ** 2) * p4[0]) / 2
         y = ((-t ** 3 + 2 * t ** 2 - t) * p1[1] + (3 * t ** 3 - 5 * t ** 2 + 2) * p2[1] + (-3 * t ** 3 + 4 * t ** 2 + t) * p3[1] + (t ** 3 - t ** 2) * p4[1]) / 2
 
 
     # draw p3-p4
 
-    elif(t>=400 and t<600):
+    elif(i>=6000 and i<9000):
+        t = (i - 6000)/ 3000
         x = ((-t ** 3 + 2 * t ** 2 - t) * p2[0] + (3 * t ** 3 - 5 * t ** 2 + 2) * p3[0] + (-3 * t ** 3 + 4 * t ** 2 + t) * p4[0] + (t ** 3 - t ** 2) * p1[0]) / 2
         y = ((-t ** 3 + 2 * t ** 2 - t) * p2[1] + (3 * t ** 3 - 5 * t ** 2 + 2) * p3[1] + (-3 * t ** 3 + 4 * t ** 2 + t) * p4[1] + (t ** 3 - t ** 2) * p1[1]) / 2
 
 
     # draw p4-p1
-
-    elif (t >= 600 and t < 800):
+    else:
+        t = (i - 9000) / 3000
         x = ((-t ** 3 + 2 * t ** 2 - t) * p3[0] + (3 * t ** 3 - 5 * t ** 2 + 2) * p4[0] + (-3 * t ** 3 + 4 * t ** 2 + t) * p1[0] + (t ** 3 - t ** 2) * p2[0]) / 2
         y = ((-t ** 3 + 2 * t ** 2 - t) * p3[1] + (3 * t ** 3 - 5 * t ** 2 + 2) * p4[1] + (-3 * t ** 3 + 4 * t ** 2 + t) * p1[1] + (t ** 3 - t ** 2) * p2[1]) / 2
-
 
     pass
 
@@ -92,18 +95,17 @@ dir_bfor = 1
 while running:
     clear_canvas()
     kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
-    character.clip_draw(frame_x * 100, frame_y * 100, 100, 100, x, y)
-
 
     #character_now(dir, dir_ud)
-    t=i/800
-    character_move((100,100),(200,200),(500, 500),(1000, 1000), t)
+
+    character_move((100,400),(1000,200),(900, 800),(100, 700), i)
+    character.clip_draw(frame_x * 100, frame_y * 100, 100, 100, x, y)
 
     update_canvas()
 
     frame_x = (frame_x + 1) % 8
     i+=1
-    if i==800:
+    if i==12000:
         i=0
         dir = 0
         dir_ud = 0
