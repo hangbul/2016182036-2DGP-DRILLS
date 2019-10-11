@@ -82,9 +82,10 @@ x, y = KPU_WIDTH // 2, KPU_HEIGHT // 2
 to_x, to_y = 0, 0
 bfo_x, bfo_y=0,0
 
-point=[(random()%KPU_WIDTH+1,random()%KPU_HEIGHT+1), (random()%KPU_WIDTH+1,random()%KPU_HEIGHT+1), (random()%KPU_WIDTH+1,random()%KPU_HEIGHT+1), (random()%KPU_WIDTH+1,random()%KPU_HEIGHT+1)]
-t, i=0, 0
+point = [(randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1)), (randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1)), (randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1)), (randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1)), (randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1)), (randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1)), (randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1)), (randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1)), (randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1)), (randint(0,KPU_WIDTH+1), randint(0,KPU_HEIGHT+1))]
 
+t, i=0, 0
+a=0
 frame_x = 0
 frame_y = 1
 
@@ -98,7 +99,8 @@ while running:
 
     #character_now(dir, dir_ud)
 
-    character_move((100,400),(1000,200),(900, 800),(100, 700), i)
+
+    character_move(point[a], point[a+1], point[a+2], point[a+3], i)
     character.clip_draw(frame_x * 100, frame_y * 100, 100, 100, x, y)
 
     update_canvas()
@@ -109,6 +111,7 @@ while running:
         i=0
         dir = 0
         dir_ud = 0
+        
     #delay(0.01)
 
 close_canvas()
