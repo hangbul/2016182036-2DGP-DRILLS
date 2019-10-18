@@ -111,7 +111,7 @@ while running:
         i=0
         dir = 0
         dir_ud = 0
-        
+
     #delay(0.01)
 
 close_canvas()
