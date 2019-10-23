@@ -6,7 +6,7 @@ from pico2d import *
 
 name = "PuaseState"
 image = None
-
+time_n = 0
 
 def enter():
     global  image
@@ -25,7 +25,22 @@ def handle_events():
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_p):
                 game_framework.pop_state()
 def draw():
-    image.draw(400, 200, 500, 300)
+    global time_n
+
+    if time_n > 0.5 and time_n < 1:
+        clear_canvas()
+        main_state.draw()
+
+    else :
+        image.clip_draw(0, 0, 900, 900, 450, 450)
+
+
+    delay(0.01)
+    time_n += 0.01
+
+    if time_n >= 1:
+        time_n = 0
+
     update_canvas()
 
 
