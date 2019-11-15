@@ -19,7 +19,7 @@ FRAMES_PER_ACTION = 8
 
 
 # Boy Event
-RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE = range(6)
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE, LANDING = range(7)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -49,7 +49,7 @@ class IdleState:
     @staticmethod
     def exit(boy, event):
         if event == SPACE:
-            boy.fire_ball()
+            boy.jump()
         pass
 
     @staticmethod
@@ -84,7 +84,7 @@ class RunState:
     @staticmethod
     def exit(boy, event):
         if event == SPACE:
-            boy.fire_ball()
+            boy.jump()
 
     @staticmethod
     def do(boy):
@@ -123,14 +123,53 @@ class SleepState:
             boy.image.clip_composite_draw(int(boy.frame) * 100, 200, 100, 100, -3.141592 / 2, '', boy.x + 25, boy.y - 25, 100, 100)
 
 
+class JumpState:
 
+    @staticmethod
+    def enter(boy, event):
+        if event == RIGHT_DOWN:
+            boy.velocity += RUN_SPEED_PPS
+            boy.dir = 1
+        elif event == LEFT_DOWN:
+            boy.velocity -= RUN_SPEED_PPS
+            boy.dir = -1
+        elif event == RIGHT_UP:
+            boy.velocity -= RUN_SPEED_PPS
+        elif event == LEFT_UP:
+            boy.velocity += RUN_SPEED_PPS
+
+
+    @staticmethod
+    def exit(boy, event):
+        pass
+
+    @staticmethod
+    def do(boy):
+        #boy.frame = (boy.frame + 1) % 8
+        boy.x += boy.velocity * game_framework.frame_time
+        boy.x = clamp(25, boy.x, 1600 - 25)
+        boy.y += boy.jump_dir
+        if boy.y - boy.jump_point == boy.jump_high:
+            boy.jump_dir *= -1
+        elif boy.y == boy.jump_point:
+            boy.jump_dir *= -1
+            boy.add_event(LANDING)
+
+    @staticmethod
+    def draw(boy):
+        if boy.dir == 1:
+            boy.image.clip_draw(100, 100, 100, 100, boy.x, boy.y)
+        else:
+            boy.image.clip_draw(100, 0, 100, 100, boy.x, boy.y)
 
 
 
 next_state_table = {
-    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState, SPACE: IdleState},
-    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE: RunState},
-    SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState}
+    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState, SPACE: JumpState},
+    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE: JumpState},
+    SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState},
+    JumpState: {LANDING: RunState}
+
 }
 
 class Boy:
@@ -141,18 +180,21 @@ class Boy:
         self.image = load_image('animation_sheet.png')
         self.font = load_font('ENCR10B.TTF', 16)
         self.dir = 1
+        self.jump_high = 200
+        self.jump_dir = 5
         self.velocity = 0
         self.frame = 0
         self.event_que = []
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
+        self.jump_point = 90
 
     def get_bb(self):
         return self.x - 50, self.y - 50, self.x + 50, self.y + 50
 
-    def fire_ball(self):
-        ball = Ball(self.x, self.y, self.dir * RUN_SPEED_PPS * 10)
-        game_world.add_object(ball, 1)
+    def jump(self):
+        self.jump_point = self.y
+        print("jump")
 
 
     def add_event(self, event):

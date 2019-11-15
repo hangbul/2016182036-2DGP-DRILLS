@@ -6,6 +6,7 @@ from pico2d import *
 import game_framework
 import game_world
 
+from brick import Brick
 from boy import Boy
 from grass import Grass
 from ball import Ball, BigBall
@@ -14,6 +15,7 @@ name = "MainState"
 
 boy = None
 grass = None
+brick = None
 balls = []
 big_balls = []
 
@@ -38,6 +40,10 @@ def enter():
     global grass
     grass = Grass()
     game_world.add_object(grass, 0)
+
+    global brick
+    brick = Brick()
+    game_world.add_object(brick, 1)
 
     global balls
     balls = [Ball() for i in range(10)] + [BigBall() for i in range(10)]
@@ -78,6 +84,10 @@ def update():
     for ball in balls:
         if collide(grass, ball):
             ball.stop()
+    for ball in balls:
+        if collide(brick, ball):
+            ball.stop()
+            ball.x += brick.dir
 
     delay(0.01)
 
