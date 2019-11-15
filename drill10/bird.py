@@ -4,6 +4,10 @@ from ball import Ball
 
 import game_world
 
+# 1 pixel : 3cm
+# bird_size : 94pixel * 95 pixel = 282cm * 285cm
+# bird_speed : 0.25km/h = 0.0695m/s
+
 PIXEL_PER_METER = (10.0 / 0.3)
 RUN_SPEED_KMPH = 0.25
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
