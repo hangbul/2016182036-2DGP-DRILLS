@@ -1,7 +1,6 @@
 import game_framework
 from pico2d import *
 from ball import Ball
-
 import game_world
 
 # Boy Run Speed
@@ -127,16 +126,7 @@ class JumpState:
 
     @staticmethod
     def enter(boy, event):
-        if event == RIGHT_DOWN:
-            boy.velocity += RUN_SPEED_PPS
-            boy.dir = 1
-        elif event == LEFT_DOWN:
-            boy.velocity -= RUN_SPEED_PPS
-            boy.dir = -1
-        elif event == RIGHT_UP:
-            boy.velocity -= RUN_SPEED_PPS
-        elif event == LEFT_UP:
-            boy.velocity += RUN_SPEED_PPS
+        pass
 
 
     @staticmethod
@@ -149,8 +139,14 @@ class JumpState:
         boy.x += boy.velocity * game_framework.frame_time
         boy.x = clamp(25, boy.x, 1600 - 25)
         boy.y += boy.jump_dir
-        if boy.y - boy.jump_point == boy.jump_high:
+        if boy.y - boy.jump_point >= boy.jump_high:
             boy.jump_dir *= -1
+
+
+        elif boy.jump_dir < 0 and boy.landing and boy.jump_point == boy.y:
+            boy.jump_dir = -1
+            boy.add_event(LANDING)
+
         elif boy.y == boy.jump_point:
             boy.jump_dir *= -1
             boy.add_event(LANDING)
@@ -164,11 +160,12 @@ class JumpState:
 
 
 
+
 next_state_table = {
     IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState, SPACE: JumpState},
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE: JumpState},
     SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState},
-    JumpState: {LANDING: RunState}
+    JumpState: {LANDING: IdleState}
 
 }
 
@@ -180,7 +177,7 @@ class Boy:
         self.image = load_image('animation_sheet.png')
         self.font = load_font('ENCR10B.TTF', 16)
         self.dir = 1
-        self.jump_high = 200
+        self.jump_high = 250
         self.jump_dir = 5
         self.velocity = 0
         self.frame = 0
@@ -188,14 +185,25 @@ class Boy:
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
         self.jump_point = 90
+        self.landing = True
 
     def get_bb(self):
-        return self.x - 50, self.y - 50, self.x + 50, self.y + 50
+        return self.x - 10, self.y - 35, self.x + 10, self.y + 50
 
     def jump(self):
+        self.jump_dir = 5
         self.jump_point = self.y
+        self.landing = False
         print("jump")
 
+    def fallen(self):
+        self.jump_point = 90
+        if self.jump_dir < 0:
+            self.y += self.jump_dir
+
+    def landed(self, object):
+        self.landing = True
+        self.jump_point = object.y + 50
 
     def add_event(self, event):
         self.event_que.insert(0, event)

@@ -89,6 +89,18 @@ def update():
             ball.stop()
             ball.x += brick.dir
 
+    if collide(brick, boy):
+        boy.landed(brick)
+        if boy.landing:
+            boy.x += brick.dir
+
+    else:
+        if collide(grass, boy):
+            boy.landed(grass)
+        else:
+            boy.fallen()
+
+
     delay(0.01)
 
 def draw():
