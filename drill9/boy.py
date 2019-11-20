@@ -141,6 +141,7 @@ class Boy:
 
 
     def update(self):
+        self.cur_state.do(self)
         if len(self.event_que) > 0:
             event = self.event_que.pop()
             self.cur_state.exit(self, event)
