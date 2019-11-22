@@ -114,6 +114,7 @@ class Boy:
         self.event_que = []
         self.cur_state = WalkingState
         self.cur_state.enter(self, None)
+        self.alive = True
 
     def get_bb(self):
         # fill here
