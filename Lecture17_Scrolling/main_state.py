@@ -2,25 +2,23 @@ import random
 import json
 import os
 
+
 from pico2d import *
 import game_framework
 import game_world
 
-
-from brick import Brick
 from boy import Boy
-from grass import Grass
-from ball import Ball, BigBall
-
+from ball import Ball
+from background import FixedBackground as Background
+#from background import InfiniteBackground as Background #무한 스크롤링
 name = "MainState"
 
 boy = None
-grass = None
-brick = None
+background = None
 balls = []
-big_balls = []
 
 def collide(a, b):
+    # fill here
     left_a, bottom_a, right_a, top_a = a.get_bb()
     left_b, bottom_b, right_b, top_b = b.get_bb()
 
@@ -32,28 +30,32 @@ def collide(a, b):
     return True
 
 
+
+def get_boy():
+    return boy
+
+
 def enter():
     global boy
     boy = Boy()
     game_world.add_object(boy, 1)
 
-    global grass
-    grass = Grass()
-    game_world.add_object(grass, 0)
+    global background
+    background = Background()
+    game_world.add_object(background, 0)
 
-    global brick
-    brick = Brick()
-    game_world.add_object(brick, 1)
+    background.set_center_object(boy)
+    boy.set_background(background)
 
     global balls
-    balls = [Ball() for i in range(10)] + [BigBall() for i in range(10)]
+    balls = [Ball() for i in range(100)]
+    game_world.add_objects(balls, 1)
     for ball in balls:
-        game_world.add_object(ball, 1)
+        ball.set_center_object(boy)
 
 
 def exit():
     game_world.clear()
-
 
 def pause():
     pass
@@ -80,34 +82,17 @@ def update():
     for ball in balls:
         if collide(boy, ball):
             balls.remove(ball)
+            boy.eat(ball)
             game_world.remove_object(ball)
-    for ball in balls:
-        if collide(grass, ball):
-            ball.stop()
-    for ball in balls:
-        if collide(brick, ball):
-            ball.stop()
-            ball.x += brick.dir
-
-    if collide(brick, boy):
-        boy.landed(brick)
-        if boy.landing:
-            boy.x += brick.dir
-
-    else:
-        if collide(grass, boy):
-            boy.landed(grass)
-        else:
-            boy.fallen()
-
-
-    delay(0.01)
 
 def draw():
     clear_canvas()
     for game_object in game_world.all_objects():
         game_object.draw()
-
-
-
     update_canvas()
+
+
+
+
+
+
